@@ -12,23 +12,23 @@ function checkServiceExist() {
 		echo "Installing postfix and mailutils";
 #		apt-get update;
 		apt-get install postfix mailutils;
-		read -p "Enter the from email address: " fromEmail;
-		read -p "Enter the from email address password: " fromEmailPass;
+		read -p "Enter from email address: " fromEmail;
+		read -p "Enter from email address password: " fromEmailPass;
+
 		echo "[smtp.gmail.com]:587    " $fromEmail ":" $fromEmailPass >> $GMAIL_AUTHENTICATION;
 		chmod 600 $GMAIL_AUTHENTICATION;
+		
 		echo "relayhost = [smtp.gmail.com]:587" >> $POSTFIX_CONFIG;
 		echo "smtp_use_tls = yes" >> $POSTFIX_CONFIG;
 		echo "smtp_sasl_auth_enable = yes" >> $POSTFIX_CONFIG;
-		echo "smtp_sasl_security_options =" >> $POSTFIX_CONFIG;
+		echo "smtp_sasl_security_options = " >> $POSTFIX_CONFIG;
 		echo "smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd" >> $POSTFIX_CONFIG;
 		echo "smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt" >> $POSTFIX_CONFIG;
+		
 		postmap /etc/postfix/sasl_passwd;
 		systemctl restart postfix.service;
-		# install and config the postfix file
-		exit 0;
 	fi;
 }
-
 
 function checkConfig() {
 	echo "checking the config files";
@@ -58,5 +58,5 @@ function sendMessage() {
 	echo "Mail Sent";
 }
 
-checkServiceExist $SERVICE;
+# checkServiceExist $SERVICE;
 checkConfig;
